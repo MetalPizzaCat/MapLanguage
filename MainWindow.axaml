@@ -1,0 +1,57 @@
+<Window xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+    x:Class="Map.MainWindow"
+    xmlns:map="using:MapLanguage.Editor"
+    Title="Map">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_New" />
+                <MenuItem Header="_Open" />
+                <MenuItem Header="_Save" />
+                <MenuItem Header="Save _As" />
+                <MenuItem Header="_Exit" />
+            </MenuItem>
+            <MenuItem Header="_Edit">
+                <MenuItem Header="_Undo" />
+                <MenuItem Header="_Redo" />
+                <MenuItem Header="_Cut" />
+                <MenuItem Header="_Paste" />
+                <MenuItem Header="C_opy" />
+            </MenuItem>
+            <MenuItem Header="_Run">
+                <MenuItem Header="_Run" />
+                <MenuItem Header="_Step" />
+                <MenuItem Header="S_top" />
+            </MenuItem>
+            <MenuItem Header="_About" />
+        </Menu>
+        <map:EditorCanvasControl DockPanel.Dock="Top" />
+        <DockPanel DockPanel.Dock="Top" LastChildFill="False">
+            <TextBlock DockPanel.Dock="Top">Items</TextBlock>
+            <ScrollViewer DockPanel.Dock="Top">
+                <ItemsControl ItemsSource="{Binding Options}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel DockPanel.Dock="Top" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+                <!-- <WrapPanel DockPanel.Dock="Top" x:Name="PallettePanel">
+                    <Button ToolTip.Tip="Move goblin left">
+                        <Image Width="64" Height="64" Source="/Assets/MoveLeft.png" />
+                    </Button>
+                    <Button ToolTip.Tip="Move goblin right">
+                        <Image Width="64" Height="64" Source="/Assets/MoveRight.png" />
+                    </Button>
+                    <Button ToolTip.Tip="Move goblin up">
+                        <Image Width="64" Height="64" Source="/Assets/MoveUp.png" />
+                    </Button>
+                </WrapPanel> -->
+            </ScrollViewer>
+        </DockPanel>
+    </DockPanel>
+</Window>

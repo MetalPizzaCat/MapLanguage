@@ -1,0 +1,127 @@
+[
+    {
+        "Operation": 0,
+        "IconName": "/Assets/NoOperation.png",
+        "Description": null
+    },
+    {
+        "Operation": 1,
+        "IconName": "/Assets/MoveLeft.png",
+        "Description": null
+    },
+    {
+        "Operation": 2,
+        "IconName": "/Assets/MoveRight.png",
+        "Description": null
+    },
+    {
+        "Operation": 3,
+        "IconName": "/Assets/MoveUp.png",
+        "Description": null
+    },
+    {
+        "Operation": 4,
+        "IconName": "/Assets/MoveDown.png",
+        "Description": null
+    },
+    {
+        "Operation": 5,
+        "IconName": "/Assets/Add.png",
+        "Description": null
+    },
+    {
+        "Operation": 6,
+        "IconName": "/Assets/Sub.png",
+        "Description": null
+    },
+    {
+        "Operation": 7,
+        "IconName": "/Assets/Mul.png",
+        "Description": null
+    },
+    {
+        "Operation": 8,
+        "IconName": "/Assets/Div.png",
+        "Description": null
+    },
+    {
+        "Operation": 9,
+        "IconName": "/Assets/Increment.png",
+        "Description": null
+    },
+    {
+        "Operation": 10,
+        "IconName": "/Assets/Decrement.png",
+        "Description": null
+    },
+    {
+        "Operation": 11,
+        "IconName": "/Assets/IsLess.png",
+        "Description": null
+    },
+    {
+        "Operation": 12,
+        "IconName": "/Assets/IsMore.png",
+        "Description": null
+    },
+    {
+        "Operation": 13,
+        "IconName": "/Assets/MoveLeftIfTrue.png",
+        "Description": null
+    },
+    {
+        "Operation": 14,
+        "IconName": "/Assets/MoveRightIfTrue.png",
+        "Description": null
+    },
+    {
+        "Operation": 15,
+        "IconName": "/Assets/MoveUpIfTrue.png",
+        "Description": null
+    },
+    {
+        "Operation": 16,
+        "IconName": "/Assets/MoveDownIfTrue.png",
+        "Description": null
+    },
+    {
+        "Operation": 17,
+        "IconName": "/Assets/IsLessOrEqual.png",
+        "Description": null
+    },
+    {
+        "Operation": 18,
+        "IconName": "/Assets/IsMoreOrEqual.png",
+        "Description": null
+    },
+    {
+        "Operation": 19,
+        "IconName": "/Assets/IsEqual.png",
+        "Description": null
+    },
+    {
+        "Operation": 20,
+        "IconName": "/Assets/IsNotEqual.png",
+        "Description": null
+    },
+    {
+        "Operation": 21,
+        "IconName": "/Assets/MoveStackDown.png",
+        "Description": null
+    },
+    {
+        "Operation": 22,
+        "IconName": "/Assets/MoveStackUp.png",
+        "Description": null
+    },
+    {
+        "Operation": 23,
+        "IconName": "/Assets/WriteFromAccumulator.png",
+        "Description": null
+    },
+    {
+        "Operation": 24,
+        "IconName": "/Assets/ReadToAccumulator.png",
+        "Description": null
+    }
+]
