@@ -4,7 +4,7 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
   x:Class="MapLanguage.Editor.OperationSelectionButton">
-  <Button ToolTip.Tip="{Binding Description}">
+  <Button ToolTip.Tip="{Binding Description}" Command = "{Binding Select}">
     <Image Source="{Binding OperationImage}" Width="32" Height="32" />
   </Button>
 </UserControl>

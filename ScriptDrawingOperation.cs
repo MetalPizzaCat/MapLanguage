@@ -15,32 +15,58 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using System.Collections.Generic;
+using System.Linq;
 using Avalonia;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using Avalonia.Rendering.SceneGraph;
 
 namespace MapLanguage.Editor;
 public sealed class ScriptDrawingOperation : ICustomDrawOperation
 {
-    public Rect Bounds => throw new System.NotImplementedException();
+    public Rect Bounds { get; }
+
+    public ScriptCanvas Canvas { get; }
+    public Dictionary<Operation, Bitmap> OperationImages { get; }
+    public int CellSize { get; }
+    public Rect FieldRect { get; }
+
+    public ScriptDrawingOperation(Rect bounds, ScriptCanvas canvas, Dictionary<Operation, Bitmap> operationImages, int cellSize = 64)
+    {
+        Canvas = canvas;
+        OperationImages = operationImages;
+        CellSize = cellSize;
+        FieldRect = new Rect(0, 0, cellSize * canvas.Width, cellSize * canvas.Height);
+        Bounds = bounds;
+    }
 
     public void Dispose()
     {
-        throw new System.NotImplementedException();
+        // nothing to dispose of 
     }
 
-    public bool Equals(ICustomDrawOperation? other)
-    {
-        throw new System.NotImplementedException();
-    }
+    public bool Equals(ICustomDrawOperation? other) => false;
 
     public bool HitTest(Point p)
     {
-        throw new System.NotImplementedException();
+        if (!Bounds.Contains(p) || !FieldRect.Contains(p))
+        {
+            return false;
+        }
+        return true;
     }
 
     public void Render(ImmediateDrawingContext context)
     {
-        throw new System.NotImplementedException();
+        for (int x = 0; x < Canvas.Width; x++)
+        {
+            for (int y = 0; y < Canvas.Height; y++)
+            {
+                Bitmap? bitmap;
+                OperationImages.TryGetValue(Canvas.Operations[x, y], out bitmap);
+                context.DrawBitmap(bitmap ?? OperationImages.Values.First(), new Rect(x * CellSize, y * CellSize, CellSize, CellSize));
+            }
+        }
     }
 }

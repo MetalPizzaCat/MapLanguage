@@ -6,7 +6,7 @@
     x:Class="Map.MainWindow"
     xmlns:map="using:MapLanguage.Editor"
     Title="Map">
-    <DockPanel>
+    <DockPanel LastChildFill="False">
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_New" />
@@ -29,8 +29,12 @@
             </MenuItem>
             <MenuItem Header="_About" />
         </Menu>
-        <map:EditorCanvasControl DockPanel.Dock="Top" />
-        <DockPanel DockPanel.Dock="Top" LastChildFill="False">
+        <ScrollViewer DockPanel.Dock="Top" HorizontalScrollBarVisibility="Auto">
+            <map:EditorCanvasControl DockPanel.Dock="Top"
+                OperationImages="{Binding OperationImages}"
+                OperationBrush="{Binding OperationBrush}" />
+        </ScrollViewer>
+        <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
             <TextBlock DockPanel.Dock="Top">Items</TextBlock>
             <ScrollViewer DockPanel.Dock="Top">
                 <ItemsControl ItemsSource="{Binding Options}">
@@ -40,17 +44,6 @@
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>
-                <!-- <WrapPanel DockPanel.Dock="Top" x:Name="PallettePanel">
-                    <Button ToolTip.Tip="Move goblin left">
-                        <Image Width="64" Height="64" Source="/Assets/MoveLeft.png" />
-                    </Button>
-                    <Button ToolTip.Tip="Move goblin right">
-                        <Image Width="64" Height="64" Source="/Assets/MoveRight.png" />
-                    </Button>
-                    <Button ToolTip.Tip="Move goblin up">
-                        <Image Width="64" Height="64" Source="/Assets/MoveUp.png" />
-                    </Button>
-                </WrapPanel> -->
             </ScrollViewer>
         </DockPanel>
     </DockPanel>

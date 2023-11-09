@@ -26,12 +26,31 @@ namespace MapLanguage.Editor;
 
 public partial class OperationSelectionButton : UserControl
 {
+    public delegate void PrimaryBrushOperationSelectedEventHandler(Operation op);
+    public event PrimaryBrushOperationSelectedEventHandler? PrimaryBrushOperationSelected;
     public static readonly DirectProperty<OperationSelectionButton, string> DescriptionProperty =
-     AvaloniaProperty.RegisterDirect<OperationSelectionButton, string>(nameof(Description), o => o.Description, (o, value) => o.Description = value);
+    AvaloniaProperty.RegisterDirect<OperationSelectionButton, string>
+    (
+        nameof(Description),
+        o => o.Description,
+        (o, value) => o.Description = value
+    );
 
+    public static readonly DirectProperty<OperationSelectionButton, Operation> OperationProperty =
+    AvaloniaProperty.RegisterDirect<OperationSelectionButton, Operation>
+    (
+        nameof(Operation),
+        o => o.Operation,
+        (o, value) => o.Operation = value
+    );
 
     public static readonly DirectProperty<OperationSelectionButton, IImage> OperationImageProperty =
-     AvaloniaProperty.RegisterDirect<OperationSelectionButton, IImage>(nameof(OperationImage), o => o.OperationImage, (o, value) => o.OperationImage = value);
+    AvaloniaProperty.RegisterDirect<OperationSelectionButton, IImage>
+    (
+        nameof(OperationImage),
+        o => o.OperationImage,
+        (o, value) => o.OperationImage = value
+    );
 
 
     public string Description
@@ -45,6 +64,12 @@ public partial class OperationSelectionButton : UserControl
         get => _operationImage;
         set => SetAndRaise(OperationImageProperty, ref _operationImage, value);
     }
+
+    public Operation Operation
+    {
+        get => _operation;
+        set => SetAndRaise(OperationProperty, ref _operation, value);
+    }
     public OperationSelectionButton()
     {
         InitializeComponent();
@@ -52,5 +77,11 @@ public partial class OperationSelectionButton : UserControl
     }
 
     private string _description = string.Empty;
+    private Operation _operation = Operation.NoOperation;
     private IImage _operationImage;
+
+    public void Select()
+    {
+        PrimaryBrushOperationSelected?.Invoke(_operation);
+    }
 }

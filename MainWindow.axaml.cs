@@ -32,9 +32,24 @@ namespace Map;
 
 public partial class MainWindow : Window
 {
+    public static readonly DirectProperty<EditorCanvasControl, Operation> OperationBrushProperty =
+    AvaloniaProperty.RegisterDirect<EditorCanvasControl, Operation>
+    (
+        nameof(OperationBrush),
+        o => o.OperationBrush,
+        (o, value) => o.OperationBrush = value
+    );
+
+    public Operation OperationBrush
+    {
+        get => _operationBrush;
+        set => SetAndRaise(OperationBrushProperty, ref _operationBrush, value);
+    }
+
     public List<OperationSelectionButton> Options { get; } = new();
 
-    private Bitmap _icons;
+    public Dictionary<Operation, Bitmap> OperationImages { get; }
+    private Operation _operationBrush = Operation.NoOperation;
     public MainWindow()
     {
         InitializeComponent();
@@ -44,16 +59,7 @@ public partial class MainWindow : Window
         //     operations.Add(new OperationInfo(operation, $"/Assets/{operation}.png", null));
         // }
         // File.WriteAllText("./Assets/OperationInfo.json", JsonSerializer.Serialize(operations));
-
-        // Options.Add(new Button()
-        // {
-        //     Content = new Image()
-        //     {
-        //         Source = new Bitmap(AssetLoader.Open(new Uri("avares://Map/Assets/MoveRight.png"))),
-        //         Width = 64,
-        //         Height = 64
-        //     }
-        // });
+        OperationImages = new();
         using (StreamReader reader = new StreamReader(AssetLoader.Open(new Uri("avares://Map/Assets/OperationInfo.json"))))
         {
             List<OperationInfo>? operations = JsonSerializer.Deserialize<List<OperationInfo>>(reader.ReadToEnd());
@@ -68,14 +74,23 @@ public partial class MainWindow : Window
                 {
                     continue;
                 }
+                OperationImages.Add(info.Operation, new Bitmap(AssetLoader.Open(path)));
                 OperationSelectionButton button = new OperationSelectionButton()
                 {
-                    Description = info?.IconName ?? string.Empty,
-                    OperationImage = new Bitmap(AssetLoader.Open(path))
+                    Description = info.IconName,
+                    OperationImage = OperationImages[info.Operation],
+                    Operation = info.Operation
                 };
+                button.PrimaryBrushOperationSelected += SelectNewOperationBrush;
+
                 Options.Add(button);
             }
             DataContext = this;
         }
+    }
+
+    private void SelectNewOperationBrush(Operation op)
+    {
+        OperationBrush = op;
     }
 }
