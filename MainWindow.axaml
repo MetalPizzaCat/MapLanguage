@@ -18,9 +18,6 @@
             <MenuItem Header="_Edit">
                 <MenuItem Header="_Undo" />
                 <MenuItem Header="_Redo" />
-                <MenuItem Header="_Cut" />
-                <MenuItem Header="_Paste" />
-                <MenuItem Header="C_opy" />
             </MenuItem>
             <MenuItem Header="_Run">
                 <MenuItem Header="_Run" Command="{Binding RunExecution}" />
@@ -37,6 +34,9 @@
                 WasEdited="{Binding WasEdited}"
                 x:Name="EditorCanvas" />
         </ScrollViewer>
+        <DockPanel DockPanel.Dock="Right">
+            
+        </DockPanel>
         <TabControl DockPanel.Dock="Bottom" MinHeight="300">
             <TabItem Header="Pallette">
                 <DockPanel LastChildFill="False">

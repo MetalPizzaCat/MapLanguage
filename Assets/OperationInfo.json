@@ -128,5 +128,10 @@
         "Operation": 25,
         "IconName": "/Assets/Print.png",
         "Description": "Write value in the accumulator to the output"
+    },
+    {
+        "Operation": 26,
+        "IconName": "/Assets/Exit.png",
+        "Description": "Ends the execution"
     }
 ]

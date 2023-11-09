@@ -53,5 +53,9 @@ public enum Operation
     /// <summary>
     /// Prints value in the accumulator to the output
     /// </summary>
-    Print
+    Print,
+    /// <summary>
+    /// Ends the execution
+    /// </summary>
+    Exit
 }
