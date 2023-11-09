@@ -50,4 +50,8 @@ public enum Operation
     MoveStackUp,
     WriteFromAccumulator,
     ReadToAccumulator,
+    /// <summary>
+    /// Prints value in the accumulator to the output
+    /// </summary>
+    Print
 }

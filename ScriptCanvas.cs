@@ -52,4 +52,6 @@ public class ScriptCanvas
     /// <param name="point">Point to check</param>
     /// <returns>True if given point does have a valid cell underneath</returns>
     public bool IsValidPoint(Vector2 point) => point.X >= 0 && point.Y >= 0 && point.X < Width && point.Y < Height;
+
+    public Operation this[Vector2 point] => Operations[point.X, point.Y];
 }

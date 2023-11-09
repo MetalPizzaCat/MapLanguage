@@ -31,12 +31,14 @@ public sealed class ScriptDrawingOperation : ICustomDrawOperation
     public Dictionary<Operation, Bitmap> OperationImages { get; }
     public int CellSize { get; }
     public Rect FieldRect { get; }
+    public Vector2? CurrentExecutionPoint { get; }
 
-    public ScriptDrawingOperation(Rect bounds, ScriptCanvas canvas, Dictionary<Operation, Bitmap> operationImages, int cellSize = 64)
+    public ScriptDrawingOperation(Rect bounds, ScriptCanvas canvas, Dictionary<Operation, Bitmap> operationImages, int cellSize = 64, Vector2? currentExecutionPoint = null)
     {
         Canvas = canvas;
         OperationImages = operationImages;
         CellSize = cellSize;
+        CurrentExecutionPoint = currentExecutionPoint;
         FieldRect = new Rect(0, 0, cellSize * canvas.Width, cellSize * canvas.Height);
         Bounds = bounds;
     }
@@ -67,6 +69,16 @@ public sealed class ScriptDrawingOperation : ICustomDrawOperation
                 OperationImages.TryGetValue(Canvas.Operations[x, y], out bitmap);
                 context.DrawBitmap(bitmap ?? OperationImages.Values.First(), new Rect(x * CellSize, y * CellSize, CellSize, CellSize));
             }
+        }
+        if (CurrentExecutionPoint != null)
+        {
+            context.DrawRectangle(Brushes.Green, null, new Rect
+            (
+                CurrentExecutionPoint.Value.X * CellSize + CellSize / 4,
+                CurrentExecutionPoint.Value.Y * CellSize + CellSize / 4,
+                CellSize / 2,
+                CellSize / 2
+            ));
         }
     }
 }

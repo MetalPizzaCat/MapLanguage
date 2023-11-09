@@ -123,5 +123,10 @@
         "Operation": 24,
         "IconName": "/Assets/ReadToAccumulator.png",
         "Description": null
+    },
+    {
+        "Operation": 25,
+        "IconName": "/Assets/Print.png",
+        "Description": "Write value in the accumulator to the output"
     }
 ]

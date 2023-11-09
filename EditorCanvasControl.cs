@@ -42,10 +42,24 @@ public class EditorCanvasControl : Control
         (o, value) => o.OperationBrush = value
     );
 
+    public static readonly DirectProperty<EditorCanvasControl, Vector2?> ExecutorPositionProperty =
+    AvaloniaProperty.RegisterDirect<EditorCanvasControl, Vector2?>
+    (
+        nameof(ExecutorPosition),
+        o => o.ExecutorPosition,
+        (o, value) => o.ExecutorPosition = value
+    );
+
     public Dictionary<Operation, Bitmap> OperationImages
     {
         get => _operationImages;
         set => SetAndRaise(OperationImagesProperty, ref _operationImages, value);
+    }
+
+    public Vector2? ExecutorPosition
+    {
+        get => _executorPosition;
+        set => SetAndRaise(ExecutorPositionProperty, ref _executorPosition, value);
     }
 
     public Operation OperationBrush
@@ -55,9 +69,15 @@ public class EditorCanvasControl : Control
     }
     public int CellSize { get; private set; } = 64;
 
+    /// <summary>
+    /// Data about current canvas
+    /// </summary>
+    public ScriptCanvas Canvas => _canvas;
+
     private ScriptCanvas _canvas = new(6, 6);
     private Dictionary<Operation, Bitmap> _operationImages = new();
     private Operation _operationBrush = Operation.NoOperation;
+    private Vector2? _executorPosition = null;
 
 
     public EditorCanvasControl()
@@ -71,7 +91,7 @@ public class EditorCanvasControl : Control
 
     public override void Render(DrawingContext context)
     {
-        context.Custom(new ScriptDrawingOperation(new Rect(0, 0, Bounds.Width, Bounds.Height), _canvas, OperationImages));
+        context.Custom(new ScriptDrawingOperation(new Rect(0, 0, Bounds.Width, Bounds.Height), _canvas, OperationImages, CellSize, _executorPosition));
         Dispatcher.UIThread.InvokeAsync(InvalidateVisual, DispatcherPriority.Background);
     }
 

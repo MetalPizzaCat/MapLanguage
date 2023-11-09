@@ -24,16 +24,19 @@
             </MenuItem>
             <MenuItem Header="_Run">
                 <MenuItem Header="_Run" />
-                <MenuItem Header="_Step" />
-                <MenuItem Header="S_top" />
+                <MenuItem Header="_Step" Command="{Binding StepExecution}" />
+                <MenuItem Header="S_top" Command="{Binding StopExecution}" />
             </MenuItem>
             <MenuItem Header="_About" />
         </Menu>
         <ScrollViewer DockPanel.Dock="Top" HorizontalScrollBarVisibility="Auto">
             <map:EditorCanvasControl DockPanel.Dock="Top"
                 OperationImages="{Binding OperationImages}"
-                OperationBrush="{Binding OperationBrush}" />
+                OperationBrush="{Binding OperationBrush}"
+                ExecutorPosition="{Binding ExecutorPosition}"
+                x:Name="EditorCanvas" />
         </ScrollViewer>
+        
         <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
             <TextBlock DockPanel.Dock="Top">Items</TextBlock>
             <ScrollViewer DockPanel.Dock="Top">
@@ -46,5 +49,19 @@
                 </ItemsControl>
             </ScrollViewer>
         </DockPanel>
+        <Border DockPanel.Dock="Bottom"
+            CornerRadius="3"
+            BorderBrush="Black"
+            BorderThickness="1">
+            <ScrollViewer DockPanel.Dock="Top">
+                <ItemsControl ItemsSource="{Binding OutputMessages}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel DockPanel.Dock="Top" MaxHeight="300" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </ScrollViewer>
+        </Border>
     </DockPanel>
 </Window>
