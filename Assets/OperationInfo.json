@@ -133,5 +133,10 @@
         "Operation": 26,
         "IconName": "/Assets/Exit.png",
         "Description": "Ends the execution"
+    },
+    {
+        "Operation": 27,
+        "IconName": "/Assets/IsZero.png",
+        "Description": "Set condition flag to true if accumulator is zero"
     }
 ]

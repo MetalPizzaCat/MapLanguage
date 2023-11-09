@@ -57,5 +57,6 @@ public enum Operation
     /// <summary>
     /// Ends the execution
     /// </summary>
-    Exit
+    Exit,
+    IsZero,
 }
