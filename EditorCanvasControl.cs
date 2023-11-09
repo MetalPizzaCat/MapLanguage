@@ -34,6 +34,14 @@ public class EditorCanvasControl : Control
         (o, value) => o.OperationImages = value
     );
 
+    public static readonly DirectProperty<EditorCanvasControl, bool> WasEditedProperty =
+    AvaloniaProperty.RegisterDirect<EditorCanvasControl, bool>
+    (
+        nameof(WasEdited),
+        o => o.WasEdited,
+        (o, value) => o.WasEdited = value
+    );
+
     public static readonly DirectProperty<EditorCanvasControl, Operation> OperationBrushProperty =
     AvaloniaProperty.RegisterDirect<EditorCanvasControl, Operation>
     (
@@ -54,6 +62,12 @@ public class EditorCanvasControl : Control
     {
         get => _operationImages;
         set => SetAndRaise(OperationImagesProperty, ref _operationImages, value);
+    }
+
+    public bool WasEdited
+    {
+        get => _wasEdited;
+        set => SetAndRaise(WasEditedProperty, ref _wasEdited, value);
     }
 
     public Vector2? ExecutorPosition
@@ -78,7 +92,7 @@ public class EditorCanvasControl : Control
     private Dictionary<Operation, Bitmap> _operationImages = new();
     private Operation _operationBrush = Operation.NoOperation;
     private Vector2? _executorPosition = null;
-
+    private bool _wasEdited = false;
 
     public EditorCanvasControl()
     {
@@ -87,6 +101,11 @@ public class EditorCanvasControl : Control
         MinWidth = _canvas.Width * 64;
 
         PointerPressed += CellClicked;
+    }
+
+    public void CreateNewCanvas(int width, int height, int x = 0, int y = 0, byte[]? bytes = null)
+    {
+        _canvas = new ScriptCanvas(bytes, width, height);
     }
 
     public override void Render(DrawingContext context)
@@ -106,5 +125,6 @@ public class EditorCanvasControl : Control
             return;
         }
         _canvas.Operations[x, y] = e.GetCurrentPoint(null).Properties.IsLeftButtonPressed ? OperationBrush : Operation.NoOperation;
+        WasEdited = true;
     }
 }

@@ -15,6 +15,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+using System;
+using System.Collections.Generic;
+
 namespace MapLanguage.Editor;
 
 /// <summary>
@@ -28,6 +31,29 @@ public class ScriptCanvas
         Height = height;
 
         Operations = new Operation[Width, Height];
+    }
+
+    public ScriptCanvas(Operation[,] operations, int width, int height)
+    {
+        Operations = operations;
+        Width = width;
+        Height = height;
+    }
+
+    public ScriptCanvas(byte[] operations, int width, int height)
+    {
+        Operations = new Operation[width, height];
+
+        Width = width;
+        Height = height;
+        int current = 0;
+        for (int x = 0; x < Width; x++)
+        {
+            for (int y = 0; y < Height; y++)
+            {
+                Operations[x, y] = (Operation)operations[current++];
+            }
+        }
     }
 
     /// <summary>
@@ -54,4 +80,27 @@ public class ScriptCanvas
     public bool IsValidPoint(Vector2 point) => point.X >= 0 && point.Y >= 0 && point.X < Width && point.Y < Height;
 
     public Operation this[Vector2 point] => Operations[point.X, point.Y];
+
+    /// <summary>
+    /// Generates a binary file that stores all of the information about the code <para/>
+    /// File structure is very simple: <para/>
+    /// width|height|start_x|start_y|operations(writen by row)
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerable<byte> GenerateFile()
+    {
+        List<byte> bytes = new();
+        bytes.AddRange(BitConverter.GetBytes(Width));
+        bytes.AddRange(BitConverter.GetBytes(Height));
+        bytes.AddRange(BitConverter.GetBytes(0));
+        bytes.AddRange(BitConverter.GetBytes(0));
+        for (int x = 0; x < Width; x++)
+        {
+            for (int y = 0; y < Height; y++)
+            {
+                bytes.Add((byte)Operations[x, y]);
+            }
+        }
+        return bytes;
+    }
 }
