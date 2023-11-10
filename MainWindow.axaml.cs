@@ -40,6 +40,9 @@ public partial class MainWindow : Window
     /// List of all messages that were printed by the code
     /// </summary>
     public ObservableCollection<string> OutputMessages { get; private set; } = new();
+
+    public ObservableCollection<MemoryCellControl> MemoryCells { get; private set; } = new();
+
     public static readonly DirectProperty<EditorCanvasControl, Operation> OperationBrushProperty =
     AvaloniaProperty.RegisterDirect<EditorCanvasControl, Operation>
     (
@@ -160,6 +163,17 @@ public partial class MainWindow : Window
         {
             StopExecution();
             _executionMachine = new Machine(EditorCanvas.Canvas, 32, Vector2.Zero);
+            MemoryCells.Clear();
+            for (int i = 0; i < _executionMachine.Stack.Length; i++)
+            {
+                MemoryCellControl cell = new MemoryCellControl()
+                {
+                    MemoryValue = _executionMachine.Stack[0],
+                    CellName = i.ToString(),
+                    MemoryCellId = 0
+                };
+                MemoryCells.Add(cell);
+            }
         }
 
         Operation? op = _executionMachine.Execute();

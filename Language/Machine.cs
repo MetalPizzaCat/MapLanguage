@@ -22,8 +22,14 @@ using MapLanguage.Editor;
 
 namespace MapLanguage;
 
+/// <summary>
+/// Class that executes code
+/// </summary>
 public class Machine
 {
+    /// <summary>
+    /// Which direction will the execution goblin go in
+    /// </summary>
     protected enum Direction
     {
         Up,
@@ -32,15 +38,41 @@ public class Machine
         Right
     }
 
+    /// <summary>
+    /// Current code loaded into memory
+    /// </summary>
     public ScriptCanvas Data { get; }
+
+    /// <summary>
+    /// Current location of the execution goblin 
+    /// </summary>
     public Vector2 ProgramPoint { get; private set; }
     private Direction _currentDirection = Direction.Down;
+    private bool _isConditionFlagChecked = false;
 
+    /// <summary>
+    /// Current memory stack
+    /// </summary>
     public int[] Stack { get; private set; }
 
+    /// <summary>
+    /// Value in the accumulator
+    /// </summary>
     public int Accumulator { get; set; } = 0;
 
+    /// <summary>
+    /// Id of the current memory cell 
+    /// </summary>
     public int CurrentStackPointer { get; set; } = 0;
+
+    /// <summary>
+    /// Result of the last check
+    /// </summary>
+    public bool IsConditionFlagChecked
+    {
+        get => _isConditionFlagChecked;
+        set => _isConditionFlagChecked = value;
+    }
 
     public Machine(ScriptCanvas data, int stackSize, Vector2 start)
     {
@@ -49,6 +81,9 @@ public class Machine
         ProgramPoint = start;
     }
 
+    /// <summary>
+    /// Move execution goblin to the next cell in current direction
+    /// </summary>
     public void MoveNext()
     {
         switch (_currentDirection)
@@ -92,12 +127,16 @@ public class Machine
                 _currentDirection = Direction.Down;
                 break;
             case Operation.Add:
+                Accumulator += Stack[CurrentStackPointer];
                 break;
             case Operation.Sub:
+                Accumulator -= Stack[CurrentStackPointer];
                 break;
             case Operation.Mul:
+                Accumulator *= Stack[CurrentStackPointer];
                 break;
             case Operation.Div:
+                Accumulator /= Stack[CurrentStackPointer];
                 break;
             case Operation.Increment:
                 Accumulator++;
@@ -106,32 +145,70 @@ public class Machine
                 Accumulator--;
                 break;
             case Operation.IsLess:
+                IsConditionFlagChecked = Accumulator < Stack[CurrentStackPointer];
                 break;
             case Operation.IsMore:
+                IsConditionFlagChecked = Accumulator > Stack[CurrentStackPointer];
                 break;
             case Operation.MoveLeftIfTrue:
+                if (IsConditionFlagChecked)
+                {
+                    _currentDirection = Direction.Left;
+                }
                 break;
             case Operation.MoveRightIfTrue:
+                if (IsConditionFlagChecked)
+                {
+                    _currentDirection = Direction.Right;
+                }
                 break;
             case Operation.MoveUpIfTrue:
+                if (IsConditionFlagChecked)
+                {
+                    _currentDirection = Direction.Up;
+                }
                 break;
             case Operation.MoveDownIfTrue:
+                if (IsConditionFlagChecked)
+                {
+                    _currentDirection = Direction.Down;
+                }
                 break;
             case Operation.IsLessOrEqual:
+                IsConditionFlagChecked = Accumulator <= Stack[CurrentStackPointer];
                 break;
             case Operation.IsMoreOrEqual:
+                IsConditionFlagChecked = Accumulator >= Stack[CurrentStackPointer];
                 break;
             case Operation.IsEqual:
+                IsConditionFlagChecked = Accumulator == Stack[CurrentStackPointer];
                 break;
             case Operation.IsNotEqual:
+                IsConditionFlagChecked = Accumulator != Stack[CurrentStackPointer];
                 break;
             case Operation.MoveStackDown:
+                CurrentStackPointer++;
                 break;
             case Operation.MoveStackUp:
+                CurrentStackPointer--;
                 break;
             case Operation.WriteFromAccumulator:
+                Stack[CurrentStackPointer] = Accumulator;
                 break;
             case Operation.ReadToAccumulator:
+                Accumulator = Stack[CurrentStackPointer];
+                break;
+            case Operation.NoOperation:
+                // no operation :3
+                break;
+            case Operation.Print:
+                // handled by the class that uses this object
+                break;
+            case Operation.Exit:
+                // TODO: End execution here
+                break;
+            case Operation.IsZero:
+                IsConditionFlagChecked = Accumulator == 0;
                 break;
             default:
                 break;
