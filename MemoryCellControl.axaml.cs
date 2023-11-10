@@ -23,6 +23,9 @@ namespace MapLanguage.Editor;
 
 public partial class MemoryCellControl : UserControl
 {
+    public delegate void MemoryCellValueChangedEventHandler(object? sender, int id, int value);
+    public event MemoryCellValueChangedEventHandler? MemoryCellValueChanged;
+
     public static readonly DirectProperty<MemoryCellControl, string> CellNameProperty =
     AvaloniaProperty.RegisterDirect<MemoryCellControl, string>
     (
@@ -48,7 +51,11 @@ public partial class MemoryCellControl : UserControl
     public int MemoryValue
     {
         get => _memoryValue;
-        set => SetAndRaise(MemoryValueProperty, ref _memoryValue, value);
+        set
+        {
+            SetAndRaise(MemoryValueProperty, ref _memoryValue, value);
+            MemoryCellValueChanged?.Invoke(this, MemoryCellId, value);
+        }
     }
 
     public int MemoryCellId { get; set; } = 0;

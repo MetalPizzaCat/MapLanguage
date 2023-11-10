@@ -172,6 +172,7 @@ public partial class MainWindow : Window
                     CellName = i.ToString(),
                     MemoryCellId = 0
                 };
+                cell.MemoryCellValueChanged += MemoryCellValueChanged;
                 MemoryCells.Add(cell);
             }
         }
@@ -184,14 +185,28 @@ public partial class MainWindow : Window
             Debug.WriteLine("Finished execution by running out of bounds");
             return false;
         }
+        if (op.Value == Operation.Exit)
+        {
+            Debug.WriteLine("Finished execution by exiting");
+            return false;
+        }
         if (op.Value == Operation.Print)
         {
             OutputMessages.Add(_executionMachine.Accumulator.ToString());
+        }
+        if (op.Value == Operation.WriteFromAccumulator || op.Value == Operation.ReadToAccumulator)
+        {
+            // TODO: Find a better way to bind array values to memory cells
+            MemoryCells[_executionMachine.CurrentStackPointer].MemoryValue = _executionMachine.Stack[_executionMachine.CurrentStackPointer];
         }
         _executionMachine.MoveNext();
         return true;
     }
 
+    private void MemoryCellValueChanged(object? sender, int id, int val)
+    {
+        _executionMachine.Stack[id] = val;
+    }
     public void StepExecution()
     {
         TryStepExecution();
