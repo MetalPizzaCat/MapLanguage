@@ -10,11 +10,11 @@
     <TextBlock DockPanel.Dock="Top">Create a new executable file</TextBlock>
     <DockPanel DockPanel.Dock="Top">
       <TextBlock DockPanel.Dock="Left">Width: </TextBlock>
-      <NumericUpDown DockPanel.Dock="Left" Minimum="2" Value="{Binding FieldWidth}"></NumericUpDown>
+      <NumericUpDown DockPanel.Dock="Left" Minimum="2" Value="{Binding FieldWidth}" Increment="1"></NumericUpDown>
     </DockPanel>
     <DockPanel DockPanel.Dock="Top">
       <TextBlock DockPanel.Dock="Left">Height: </TextBlock>
-      <NumericUpDown DockPanel.Dock="Left" Minimum="2" Value="{Binding FieldHeight}"></NumericUpDown>
+      <NumericUpDown DockPanel.Dock="Left" Minimum="2" Value="{Binding FieldHeight}" Increment="1"></NumericUpDown>
     </DockPanel>
     <DockPanel DockPanel.Dock="Top">
       <Button DockPanel.Dock="Left" Command="{Binding Accept}">Create</Button>
