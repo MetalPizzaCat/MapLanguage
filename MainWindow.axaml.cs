@@ -31,6 +31,9 @@ using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using MapLanguage;
 using MapLanguage.Editor;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Base;
+using MsBox.Avalonia.Enums;
 
 namespace Map;
 
@@ -43,24 +46,32 @@ public partial class MainWindow : Window
 
     public ObservableCollection<MemoryCellControl> MemoryCells { get; private set; } = new();
 
-    public static readonly DirectProperty<EditorCanvasControl, Operation> OperationBrushProperty =
-    AvaloniaProperty.RegisterDirect<EditorCanvasControl, Operation>
+    public static readonly DirectProperty<MainWindow, Operation> OperationBrushProperty =
+    AvaloniaProperty.RegisterDirect<MainWindow, Operation>
     (
         nameof(OperationBrush),
         o => o.OperationBrush,
         (o, value) => o.OperationBrush = value
     );
 
-    public static readonly DirectProperty<EditorCanvasControl, Vector2?> ExecutorPositionProperty =
-    AvaloniaProperty.RegisterDirect<EditorCanvasControl, Vector2?>
+    public static readonly DirectProperty<MainWindow, int> AccumulatorValueProperty =
+    AvaloniaProperty.RegisterDirect<MainWindow, int>
+    (
+        nameof(AccumulatorValue),
+        o => o.AccumulatorValue,
+        (o, value) => o.AccumulatorValue = value
+    );
+
+    public static readonly DirectProperty<MainWindow, Vector2?> ExecutorPositionProperty =
+    AvaloniaProperty.RegisterDirect<MainWindow, Vector2?>
     (
         nameof(ExecutorPosition),
         o => o.ExecutorPosition,
         (o, value) => o.ExecutorPosition = value
     );
 
-    public static readonly DirectProperty<EditorCanvasControl, bool> WasEditedProperty =
-    AvaloniaProperty.RegisterDirect<EditorCanvasControl, bool>
+    public static readonly DirectProperty<MainWindow, bool> WasEditedProperty =
+    AvaloniaProperty.RegisterDirect<MainWindow, bool>
     (
         nameof(WasEdited),
         o => o.WasEdited,
@@ -75,6 +86,12 @@ public partial class MainWindow : Window
     {
         get => _operationBrush;
         set => SetAndRaise(OperationBrushProperty, ref _operationBrush, value);
+    }
+
+    public int AccumulatorValue
+    {
+        get => _accumulatorValue;
+        set => SetAndRaise(AccumulatorValueProperty, ref _accumulatorValue, value);
     }
 
     public Vector2? ExecutorPosition
@@ -111,7 +128,14 @@ public partial class MainWindow : Window
     private Vector2? _executorPosition = null;
     private bool _shouldRun = false;
     private Uri? _currentFilePath = null;
+    private int _accumulatorValue = 0;
+
     private bool _wasEdited = false;
+
+    /// <summary>
+    /// Used as a temporary memory storage between program runs
+    /// </summary>
+    private int[] _memoryStorage;
 
     public MainWindow()
     {
@@ -145,10 +169,28 @@ public partial class MainWindow : Window
                     Operation = info.Operation
                 };
                 button.PrimaryBrushOperationSelected += SelectNewOperationBrush;
-
+                CreateMemoryControls();
                 Options.Add(button);
             }
+
             DataContext = this;
+        }
+    }
+
+    private void CreateMemoryControls()
+    {
+        _memoryStorage = new int[EditorCanvas.Canvas.Width * EditorCanvas.Canvas.Height];
+        MemoryCells.Clear();
+        for (int i = 0; i < _memoryStorage.Length; i++)
+        {
+            MemoryCellControl cell = new MemoryCellControl()
+            {
+                MemoryValue = _memoryStorage[0],
+                CellName = i.ToString(),
+                MemoryCellId = 0
+            };
+            cell.MemoryCellValueChanged += MemoryCellValueChanged;
+            MemoryCells.Add(cell);
         }
     }
 
@@ -157,24 +199,37 @@ public partial class MainWindow : Window
         OperationBrush = op;
     }
 
+    /// <summary>
+    /// Create a new instance of the execution machine
+    /// </summary>
+    private void StartExecution()
+    {
+        _executionMachine = new Machine(EditorCanvas.Canvas, 32, Vector2.Zero, _memoryStorage);
+        MemoryCells.Clear();
+        for (int i = 0; i < _executionMachine.Stack.Length; i++)
+        {
+            MemoryCellControl cell = new MemoryCellControl()
+            {
+                MemoryValue = _executionMachine.Stack[0],
+                CellName = i.ToString(),
+                MemoryCellId = 0
+            };
+            cell.MemoryCellValueChanged += MemoryCellValueChanged;
+            MemoryCells.Add(cell);
+        }
+    }
+
+    /// <summary>
+    /// Attempt to perform execution and stop if execution has finished<para/>
+    /// If execution machine has not yet been initialized it will will be created
+    /// </summary>
+    /// <returns>True if execution was not finished</returns>
     public bool TryStepExecution()
     {
         if (_executionMachine == null)
         {
             StopExecution();
-            _executionMachine = new Machine(EditorCanvas.Canvas, 32, Vector2.Zero);
-            MemoryCells.Clear();
-            for (int i = 0; i < _executionMachine.Stack.Length; i++)
-            {
-                MemoryCellControl cell = new MemoryCellControl()
-                {
-                    MemoryValue = _executionMachine.Stack[0],
-                    CellName = i.ToString(),
-                    MemoryCellId = 0
-                };
-                cell.MemoryCellValueChanged += MemoryCellValueChanged;
-                MemoryCells.Add(cell);
-            }
+            StartExecution();
         }
 
         Operation? op = _executionMachine.Execute();
@@ -199,27 +254,49 @@ public partial class MainWindow : Window
             // TODO: Find a better way to bind array values to memory cells
             MemoryCells[_executionMachine.CurrentStackPointer].MemoryValue = _executionMachine.Stack[_executionMachine.CurrentStackPointer];
         }
+        AccumulatorValue = _executionMachine.Accumulator;
         _executionMachine.MoveNext();
         return true;
     }
 
+    /// <summary>
+    /// Update stored memory values when user changes them via UI
+    /// </summary>
+    /// <param name="sender">Object where it came from</param>
+    /// <param name="id">Id of the changed cell</param>
+    /// <param name="val">New value for the cell</param>
     private void MemoryCellValueChanged(object? sender, int id, int val)
     {
-        _executionMachine.Stack[id] = val;
+        if (_executionMachine != null)
+        {
+            _executionMachine.Stack[id] = val;
+        }
+        _memoryStorage[id] = val;
     }
     public void StepExecution()
     {
         TryStepExecution();
     }
 
+    /// <summary>
+    /// Stop execution and write down updated memory
+    /// </summary>
     public void StopExecution()
     {
         _executionMachine = null;
         OutputMessages.Clear();
         ExecutorPosition = null;
         _shouldRun = false;
+        int id = 0;
+        foreach (MemoryCellControl cell in MemoryCells)
+        {
+            _memoryStorage[id++] = cell.MemoryValue;
+        }
     }
 
+    /// <summary>
+    /// Run the execution loop with delays
+    /// </summary>
     public async Task RunExecutionTask()
     {
         while (TryStepExecution() && _shouldRun)
@@ -235,6 +312,49 @@ public partial class MainWindow : Window
         Dispatcher.UIThread.Post(() => RunExecutionTask(), DispatcherPriority.Background);
     }
 
+    /// <summary>
+    /// Open the dialog for new file creation
+    /// </summary>
+    public async void NewFile()
+    {
+
+        IMsBox<ButtonResult>? question = MessageBoxManager.GetMessageBoxStandard
+        (
+            "Save existing project?",
+            "There is already a project opened, do you wish to save it?",
+            MsBox.Avalonia.Enums.ButtonEnum.YesNoCancel
+        );
+        ButtonResult result = await question.ShowAsync();
+
+        switch (result)
+        {
+            case ButtonResult.Yes:
+                SaveFile();
+                // save but we are changing file
+                CurrentFilePath = null;
+                WasEdited = false;
+                break;
+            case ButtonResult.Cancel:
+                return;
+            default:
+                break;
+        }
+        StopExecution();
+        FileCreationDialogWindow dialog = new FileCreationDialogWindow();
+        await dialog.ShowDialog(this);
+        if (!dialog.CreationAccepted)
+        {
+            // user quit -> we pretend nothing happened
+            return;
+        }
+
+        EditorCanvas.CreateNewCanvas(dialog.FieldWidth, dialog.FieldHeight, 0, 0);
+    }
+
+    /// <summary>
+    /// Try to write current code canvas into a file
+    /// </summary>
+    /// <param name="file">Destination</param>
     public async void SaveCanvasToFile(IStorageFile file)
     {
         await using Stream? stream = await file.OpenWriteAsync();
@@ -243,6 +363,7 @@ public partial class MainWindow : Window
         CurrentFilePath = file.Path;
         WasEdited = false;
     }
+
     public async void SaveFile()
     {
         // redirect to save file as if file is already recorded
@@ -292,5 +413,14 @@ public partial class MainWindow : Window
             CurrentFilePath = files[0].Path;
             WasEdited = false;
         }
+    }
+
+    public void ClearMemory()
+    {
+        if (_shouldRun || _executionMachine != null)
+        {
+            return;
+        }
+        CreateMemoryControls();
     }
 }

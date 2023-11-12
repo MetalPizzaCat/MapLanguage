@@ -86,7 +86,16 @@ public class EditorCanvasControl : Control
     /// <summary>
     /// Data about current canvas
     /// </summary>
-    public ScriptCanvas Canvas => _canvas;
+    public ScriptCanvas Canvas
+    {
+        get => _canvas;
+        private set
+        {
+            _canvas = value;
+            MinHeight = _canvas.Height * 64;
+            MinWidth = _canvas.Width * 64;
+        }
+    }
 
     private ScriptCanvas _canvas = new(6, 6);
     private Dictionary<Operation, Bitmap> _operationImages = new();
@@ -105,7 +114,7 @@ public class EditorCanvasControl : Control
 
     public void CreateNewCanvas(int width, int height, int x = 0, int y = 0, byte[]? bytes = null)
     {
-        _canvas = new ScriptCanvas(bytes, width, height);
+        Canvas = new ScriptCanvas(bytes ?? new byte[width * height], width, height);
     }
 
     public override void Render(DrawingContext context)

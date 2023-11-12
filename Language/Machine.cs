@@ -74,9 +74,9 @@ public class Machine
         set => _isConditionFlagChecked = value;
     }
 
-    public Machine(ScriptCanvas data, int stackSize, Vector2 start)
+    public Machine(ScriptCanvas data, int stackSize, Vector2 start, int[]? stack = null)
     {
-        Stack = new int[stackSize];
+        Stack = stack ?? new int[stackSize];
         Data = data;
         ProgramPoint = start;
     }
