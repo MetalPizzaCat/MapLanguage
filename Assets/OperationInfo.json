@@ -2,127 +2,127 @@
     {
         "Operation": 0,
         "IconName": "/Assets/NoOperation.png",
-        "Description": null
+        "Description": "Do nothing in this cell"
     },
     {
         "Operation": 1,
         "IconName": "/Assets/MoveLeft.png",
-        "Description": null
+        "Description": "Change execution direction to go left"
     },
     {
         "Operation": 2,
         "IconName": "/Assets/MoveRight.png",
-        "Description": null
+        "Description": "Change execution direction to go right"
     },
     {
         "Operation": 3,
         "IconName": "/Assets/MoveUp.png",
-        "Description": null
+        "Description": "Change execution direction to go up"
     },
     {
         "Operation": 4,
         "IconName": "/Assets/MoveDown.png",
-        "Description": null
+        "Description": "Change execution direction to go down"
     },
     {
         "Operation": 5,
         "IconName": "/Assets/Add.png",
-        "Description": null
+        "Description": "Add value in accumulator with current cell and write back into accumulator"
     },
     {
         "Operation": 6,
         "IconName": "/Assets/Sub.png",
-        "Description": null
+        "Description": "Subtract current memory cell value from accumulator and write back into accumulator"
     },
     {
         "Operation": 7,
         "IconName": "/Assets/Mul.png",
-        "Description": null
+        "Description": "Multiply value in accumulator by current memory cell and write back into accumulator"
     },
     {
         "Operation": 8,
         "IconName": "/Assets/Div.png",
-        "Description": null
+        "Description": "Divide value in accumulator by current memory cell and write back into accumulator"
     },
     {
         "Operation": 9,
         "IconName": "/Assets/Increment.png",
-        "Description": null
+        "Description": "Add 1 to accumulator"
     },
     {
         "Operation": 10,
         "IconName": "/Assets/Decrement.png",
-        "Description": null
+        "Description": "Subtract 1 from accumulator"
     },
     {
         "Operation": 11,
         "IconName": "/Assets/IsLess.png",
-        "Description": null
+        "Description": "Sets flag to true if accumulator is less than current memory cell value"
     },
     {
         "Operation": 12,
         "IconName": "/Assets/IsMore.png",
-        "Description": null
+        "Description": "Sets flag to true if accumulator is more than current memory cell value"
     },
     {
         "Operation": 13,
         "IconName": "/Assets/MoveLeftIfTrue.png",
-        "Description": null
+        "Description": "Change execution direction to go left if flag is true"
     },
     {
         "Operation": 14,
         "IconName": "/Assets/MoveRightIfTrue.png",
-        "Description": null
+        "Description": "Change execution direction to go right if flag is true"
     },
     {
         "Operation": 15,
         "IconName": "/Assets/MoveUpIfTrue.png",
-        "Description": null
+        "Description": "Change execution direction to go up if flag is true"
     },
     {
         "Operation": 16,
         "IconName": "/Assets/MoveDownIfTrue.png",
-        "Description": null
+        "Description": "Change execution direction to go down if flag is true"
     },
     {
         "Operation": 17,
         "IconName": "/Assets/IsLessOrEqual.png",
-        "Description": null
+        "Description": "Sets flag to true if accumulator is less or equal to current memory cell value"
     },
     {
         "Operation": 18,
         "IconName": "/Assets/IsMoreOrEqual.png",
-        "Description": null
+        "Description": "Sets flag to true if accumulator is more or equal to current memory cell value"
     },
     {
         "Operation": 19,
         "IconName": "/Assets/IsEqual.png",
-        "Description": null
+        "Description": "Sets flag to true if accumulator equal to current memory cell value"
     },
     {
         "Operation": 20,
         "IconName": "/Assets/IsNotEqual.png",
-        "Description": null
+        "Description": "Sets flag to true if accumulator is not or equal to current memory cell value"
     },
     {
         "Operation": 21,
         "IconName": "/Assets/MoveStackDown.png",
-        "Description": null
+        "Description": "Select next memory cell value"
     },
     {
         "Operation": 22,
         "IconName": "/Assets/MoveStackUp.png",
-        "Description": null
+        "Description": "Select previous memory cell value"
     },
     {
         "Operation": 23,
         "IconName": "/Assets/WriteFromAccumulator.png",
-        "Description": null
+        "Description": "Write from accumulator to current memory cell "
     },
     {
         "Operation": 24,
         "IconName": "/Assets/ReadToAccumulator.png",
-        "Description": null
+        "Description": "Write from current memory cell to accumulator"
     },
     {
         "Operation": 25,

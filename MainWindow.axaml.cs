@@ -227,12 +227,10 @@ public partial class MainWindow : Window
     {
         if (_executionMachine == null)
         {
-            StopExecution();
-            StartExecution();
+            return false;
         }
 
         Operation? op = _executionMachine.Execute();
-        ExecutorPosition = _executionMachine.ProgramPoint;
         if (op == null)
         {
             // we are done
@@ -244,16 +242,22 @@ public partial class MainWindow : Window
             Debug.WriteLine("Finished execution by exiting");
             return false;
         }
-        if (op.Value == Operation.Print)
+
+        Dispatcher.UIThread.Post(() =>
         {
-            OutputMessages.Add(_executionMachine.Accumulator.ToString());
-        }
-        if (op.Value == Operation.WriteFromAccumulator || op.Value == Operation.ReadToAccumulator)
-        {
-            // TODO: Find a better way to bind array values to memory cells
-            MemoryCells[_executionMachine.CurrentStackPointer].MemoryValue = _executionMachine.Stack[_executionMachine.CurrentStackPointer];
-        }
-        AccumulatorValue = _executionMachine.Accumulator;
+            ExecutorPosition = _executionMachine.ProgramPoint;
+
+            if (op.Value == Operation.Print)
+            {
+                OutputMessages.Add(_executionMachine.Accumulator.ToString());
+            }
+            if (op.Value == Operation.WriteFromAccumulator || op.Value == Operation.ReadToAccumulator)
+            {
+                // TODO: Find a better way to bind array values to memory cells
+                MemoryCells[_executionMachine.CurrentStackPointer].MemoryValue = _executionMachine.Stack[_executionMachine.CurrentStackPointer];
+            }
+            AccumulatorValue = _executionMachine.Accumulator;
+        });
         _executionMachine.MoveNext();
         return true;
     }
@@ -274,6 +278,11 @@ public partial class MainWindow : Window
     }
     public void StepExecution()
     {
+        if (_executionMachine == null)
+        {
+            StopExecution();
+            StartExecution();
+        }
         TryStepExecution();
     }
 
@@ -296,19 +305,28 @@ public partial class MainWindow : Window
     /// <summary>
     /// Run the execution loop with delays
     /// </summary>
-    public async Task RunExecutionTask()
+    public async void RunExecutionTask()
     {
         while (TryStepExecution() && _shouldRun)
         {
             await Task.Delay(500);
         }
-        StopExecution();
+        Dispatcher.UIThread.Post(StopExecution);
     }
 
     public void RunExecution()
     {
+
+        // in theory run should always run from a clean machine
+        // but this could allow us to continue running a stepped code
+        // created here instead of relying on step function to avoid having to reset the machine in a separate thread
+        if (_executionMachine == null)
+        {
+            StopExecution();
+            StartExecution();
+        }
         _shouldRun = true;
-        Dispatcher.UIThread.Post(() => RunExecutionTask(), DispatcherPriority.Background);
+        Task.Run(() => RunExecutionTask());
     }
 
     /// <summary>
