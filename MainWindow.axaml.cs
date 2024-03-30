@@ -123,6 +123,11 @@ public partial class MainWindow : Window
         }
     }
 
+    /// <summary>
+    /// How much memory each program has 
+    /// </summary>
+    public static readonly int MemorySize = 64;
+
     private Operation _operationBrush = Operation.NoOperation;
     private Machine? _executionMachine = null;
     private Vector2? _executorPosition = null;
@@ -169,6 +174,7 @@ public partial class MainWindow : Window
                     Operation = info.Operation
                 };
                 button.PrimaryBrushOperationSelected += SelectNewOperationBrush;
+                InitMemory();
                 CreateMemoryControls();
                 Options.Add(button);
             }
@@ -177,17 +183,21 @@ public partial class MainWindow : Window
         }
     }
 
+    private void InitMemory()
+    {
+        _memoryStorage = new int[MemorySize];
+    }
+
     private void CreateMemoryControls()
     {
-        _memoryStorage = new int[EditorCanvas.Canvas.Width * EditorCanvas.Canvas.Height];
         MemoryCells.Clear();
-        for (int i = 0; i < _memoryStorage.Length; i++)
+        for (int i = 0; i < MemorySize; i++)
         {
             MemoryCellControl cell = new MemoryCellControl()
             {
                 MemoryValue = _memoryStorage[0],
                 CellName = i.ToString(),
-                MemoryCellId = 0
+                MemoryCellId = i
             };
             cell.MemoryCellValueChanged += MemoryCellValueChanged;
             MemoryCells.Add(cell);
@@ -204,19 +214,8 @@ public partial class MainWindow : Window
     /// </summary>
     private void StartExecution()
     {
-        _executionMachine = new Machine(EditorCanvas.Canvas, 32, Vector2.Zero, _memoryStorage);
-        MemoryCells.Clear();
-        for (int i = 0; i < _executionMachine.Stack.Length; i++)
-        {
-            MemoryCellControl cell = new MemoryCellControl()
-            {
-                MemoryValue = _executionMachine.Stack[0],
-                CellName = i.ToString(),
-                MemoryCellId = 0
-            };
-            cell.MemoryCellValueChanged += MemoryCellValueChanged;
-            MemoryCells.Add(cell);
-        }
+        _executionMachine = new Machine(EditorCanvas.Canvas, MemorySize, Vector2.Zero, _memoryStorage);
+        CreateMemoryControls();
     }
 
     /// <summary>
@@ -421,6 +420,7 @@ public partial class MainWindow : Window
         {
             return;
         }
+        InitMemory();
         CreateMemoryControls();
     }
 }
