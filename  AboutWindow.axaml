@@ -1,0 +1,16 @@
+<Window xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  mc:Ignorable="d" Width="500"  Height = "100" d:DesignWidth="300" d:DesignHeight="100"
+  x:Class="MapLanguage.Editor.AboutWindow"
+  Title="About">
+  <DockPanel Width="500" >
+    <TextBlock DockPanel.Dock="Top" TextAlignment="Center">Map Language</TextBlock>
+    <TextBlock DockPanel.Dock="Top" TextAlignment="Left">MapLang: a simple esolang where execution
+      happens on a 2d grid</TextBlock>
+    <TextBlock DockPanel.Dock="Top" TextAlignment="Left">Version: 0.9</TextBlock>
+    <TextBlock DockPanel.Dock="Top" TextAlignment="Left">Made by Sofia "MetalPizzaCat" © 2023-2024</TextBlock>
+    <TextBlock DockPanel.Dock="Top" TextAlignment="Left">Trans rights are human rights! 🏳️‍⚧️</TextBlock>
+  </DockPanel>
+</Window>

@@ -128,6 +128,8 @@ public class EditorCanvasControl : Control
     public void CreateNewCanvas(int width, int height, int x = 0, int y = 0, byte[]? bytes = null)
     {
         Canvas = new ScriptCanvas(bytes ?? new byte[width * height], width, height);
+        _currentHistoryId = 0;
+        PlacedOperations = new();
     }
 
     public override void Render(DrawingContext context)

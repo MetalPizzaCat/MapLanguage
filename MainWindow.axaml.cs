@@ -442,6 +442,12 @@ public partial class MainWindow : Window
         EditorCanvas.Redo();
     }
 
+    public async void ShowAboutWindow()
+    {
+        AboutWindow dialog = new();
+        await dialog.ShowDialog(this);
+    }
+
     public async void QuitEditor()
     {
         IMsBox<ButtonResult>? question = MessageBoxManager.GetMessageBoxStandard
@@ -459,7 +465,7 @@ public partial class MainWindow : Window
                 // save but we are changing file
                 CurrentFilePath = null;
                 WasEdited = false;
-                
+
                 break;
             case ButtonResult.Cancel:
                 return;
