@@ -432,6 +432,43 @@ public partial class MainWindow : Window
         }
     }
 
+    public void UndoLastAction()
+    {
+        EditorCanvas.Undo();
+    }
+
+    public void RedoLastAction()
+    {
+        EditorCanvas.Redo();
+    }
+
+    public async void QuitEditor()
+    {
+        IMsBox<ButtonResult>? question = MessageBoxManager.GetMessageBoxStandard
+        (
+            "Save existing project?",
+            "There is already a project opened, do you wish to save it?",
+            MsBox.Avalonia.Enums.ButtonEnum.YesNoCancel
+        );
+        ButtonResult result = await question.ShowAsync();
+
+        switch (result)
+        {
+            case ButtonResult.Yes:
+                SaveFile();
+                // save but we are changing file
+                CurrentFilePath = null;
+                WasEdited = false;
+                
+                break;
+            case ButtonResult.Cancel:
+                return;
+            default:
+                break;
+        }
+        Close();
+    }
+
     public void ClearMemory()
     {
         if (_shouldRun || _executionMachine != null)

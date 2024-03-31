@@ -19,11 +19,11 @@
                 <MenuItem Header="_Reset memory" Command="{Binding ClearMemory}"
                     ToolTip.Tip="Set all memory cells to 0. Can't be used when program is executing" />
                 <Separator />
-                <MenuItem Header="_Exit" />
+                <MenuItem Header="_Quit" />
             </MenuItem>
             <MenuItem Header="_Edit">
-                <MenuItem Header="_Undo" />
-                <MenuItem Header="_Redo" />
+                <MenuItem Header="_Undo" Command="{Binding UndoLastAction}" />
+                <MenuItem Header="_Redo" Command="{Binding RedoLastAction}" />
             </MenuItem>
             <MenuItem Header="_Run">
                 <MenuItem Header="_Run" Command="{Binding RunExecution}" />
@@ -42,8 +42,7 @@
                     WasEdited="{Binding WasEdited}"
                     x:Name="EditorCanvas" />
             </ScrollViewer>
-            <TabControl DockPanel.Dock="Right" MinHeight="300" Grid.Row="1" Margin="5"
-                >
+            <TabControl DockPanel.Dock="Right" MinHeight="300" Grid.Row="1" Margin="5">
                 <TabItem Header="Pallette">
                     <DockPanel LastChildFill="False">
                         <TextBlock DockPanel.Dock="Top">Items</TextBlock>
@@ -96,4 +95,16 @@
             </TabControl>
         </Grid>
     </DockPanel>
+    
+    <Window.KeyBindings>
+        <KeyBinding Gesture="Ctrl+N" Command="{Binding NewFile}" />
+        <KeyBinding Gesture="Ctrl+S" Command="{Binding SaveFile}" />
+        <KeyBinding Gesture="Ctrl+O" Command="{Binding LoadFile}" />
+        <KeyBinding Gesture="Ctrl+Shift+S" Command="{Binding SaveFileAs}" />
+        <KeyBinding Gesture="Ctrl+Z" Command="{Binding UndoLastAction}" />
+        <KeyBinding Gesture="Ctrl+Y" Command="{Binding RedoLastAction}" />
+        <KeyBinding Gesture="F5" Command="{Binding RunExecution}" />
+        <KeyBinding Gesture="F7" Command="{Binding StepExecution}" />
+        <KeyBinding Gesture="Ctrl+Q" Command="{Binding QuitEditor}" />
+    </Window.KeyBindings>
 </Window>

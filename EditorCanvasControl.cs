@@ -22,8 +22,18 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.Input;
+using System;
 
 namespace MapLanguage.Editor;
+
+/// <summary>
+/// Action that happened on the canvas
+/// </summary>
+/// <param name="newValue">Value that was written into the cell</param>
+/// <param name="oldValue">Value that was present in the cell before</param>
+/// <param name="cell">Location of the cell</param>
+public record CanvasActionInfo(Operation NewValue, Operation OldValue, Vector2 Cell);
+
 public class EditorCanvasControl : Control
 {
     public static readonly DirectProperty<EditorCanvasControl, Dictionary<Operation, Bitmap>> OperationImagesProperty =
@@ -103,6 +113,9 @@ public class EditorCanvasControl : Control
     private Vector2? _executorPosition = null;
     private bool _wasEdited = false;
 
+    public List<CanvasActionInfo> PlacedOperations { get; private set; } = new();
+    private int _currentHistoryId = 0;
+
     public EditorCanvasControl()
     {
         ClipToBounds = true;
@@ -123,6 +136,27 @@ public class EditorCanvasControl : Control
         Dispatcher.UIThread.InvokeAsync(InvalidateVisual, DispatcherPriority.Background);
     }
 
+    public void Undo()
+    {
+        if (_currentHistoryId <= 0)
+        {
+            return;
+        }
+        _currentHistoryId--;
+        _canvas.Operations[PlacedOperations[_currentHistoryId].Cell.X, PlacedOperations[_currentHistoryId].Cell.Y] = PlacedOperations[_currentHistoryId].OldValue;
+
+    }
+
+    public void Redo()
+    {
+        if (_currentHistoryId == PlacedOperations.Count)
+        {
+            return;
+        }
+        _canvas.Operations[PlacedOperations[_currentHistoryId].Cell.X, PlacedOperations[_currentHistoryId].Cell.Y] = PlacedOperations[_currentHistoryId].NewValue;
+        _currentHistoryId++;
+    }
+
     private void CellClicked(object? sender, PointerPressedEventArgs e)
     {
         Point clickPoint = e.GetPosition(this);
@@ -133,7 +167,15 @@ public class EditorCanvasControl : Control
         {
             return;
         }
-        _canvas.Operations[x, y] = e.GetCurrentPoint(null).Properties.IsLeftButtonPressed ? OperationBrush : Operation.NoOperation;
+        Operation op = e.GetCurrentPoint(null).Properties.IsLeftButtonPressed ? OperationBrush : Operation.NoOperation;
+        // override history with new items
+        if (PlacedOperations.Count > _currentHistoryId)
+        {
+            PlacedOperations.RemoveRange(_currentHistoryId, PlacedOperations.Count - _currentHistoryId);
+        }
+        PlacedOperations.Add(new CanvasActionInfo(op, _canvas.Operations[x, y], new Vector2(x, y)));
+        _canvas.Operations[x, y] = op;
+        _currentHistoryId++;
         WasEdited = true;
     }
 }
